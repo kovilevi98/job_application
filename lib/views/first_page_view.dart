@@ -1,3 +1,4 @@
+import 'package:dictionaryx/dictionary_reduced_sa.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:job_application/bloc/bloc.dart';
@@ -24,7 +25,12 @@ class _FirstPageState extends State<FirstPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text('First screen'),
-              ElevatedButton(onPressed: _onNextScreenPressed, style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.transparent)),child: Text("Next screen"))
+              ElevatedButton(
+                  onPressed: _onNextScreenPressed,
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.transparent)),
+                  child: Text("Next screen"))
             ],
           ),
         ),
@@ -63,19 +69,20 @@ class _FirstPageState extends State<FirstPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text("New words: "),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               SizedBox(
                   width: MediaQuery.of(context).size.width / 2,
-                  child: Text(corrects.map((c) => c.item1).toList().join(', '))),
+                  child:
+                      Text(corrects.map((c) => c.item1).toList().join(', '))),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text("Wrong words: "),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               SizedBox(
@@ -88,11 +95,7 @@ class _FirstPageState extends State<FirstPage> {
           ),
           TextFormField(
               controller: _textEditingController,
-              validator: (value) => value == null || value.isEmpty
-                  ? 'Write a new word'
-                  : (alphaExp.hasMatch(value)
-                      ? null
-                      : 'Only Alphabets are allowed')),
+              validator: _validation),
           ElevatedButton(onPressed: _onSubmitPressed, child: Text('Store'))
         ],
       ),
@@ -115,6 +118,26 @@ class _FirstPageState extends State<FirstPage> {
     //print(a.toString());
   }
 
+  String? _validation(String? value){
+    if (value == null || value.isEmpty) {
+      return 'Write a new word';
+    } else if (!alphaExp.hasMatch(value)) {
+      return 'Only Alphabets are allowed';
+    } else {
+      List words = value.split(" ");
+      var tooLongList = words.where((element) => element.length > 45);
+      if(tooLongList.isNotEmpty){
+        return 'One of the words is too long';
+      }
+      var dReducedSA = DictionaryReducedSA();
+      var notValidWords = words.where((element) => !dReducedSA.hasEntry(element));
+      if(notValidWords.isNotEmpty){
+        return 'One of the words is not valid';
+      }
+    }
+
+    return null;
+  }
   _onNextScreenPressed() {
     Navigator.of(context).pushNamed('/list');
   }
