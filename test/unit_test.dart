@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:job_application/bloc/bloc.dart';
 import 'package:job_application/bloc/event.dart';
 import 'package:job_application/bloc/state.dart';
+import 'package:tuple/tuple.dart';
 
 class MockListBloc extends MockBloc<ListEvent, ListStates>
     implements ListBloc {}
@@ -29,7 +30,7 @@ void main(){
     build: () => ListBloc(),
     act: (bloc) => bloc.add(AddToList(['test'])),
     verify: (bloc) {
-      expect(bloc.state, UpdateListState(['test']));
+      expect(bloc.state, UpdateListState(['test'], [Tuple2('test', false)]));
     },
   );
 }

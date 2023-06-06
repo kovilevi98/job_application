@@ -21,9 +21,10 @@ class _FirstPageState extends State<FirstPage> {
     return Scaffold(
         appBar: AppBar(
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text('First screen'),
-              ElevatedButton(onPressed: _onNextScreenPressed, child: Text("Next screen"))
+              ElevatedButton(onPressed: _onNextScreenPressed, style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.transparent)),child: Text("Next screen"))
             ],
           ),
         ),
@@ -36,8 +37,8 @@ class _FirstPageState extends State<FirstPage> {
                   return _buildContent(context, []);
                 }
 
-                if (state is UpdateFeedbackState) {
-                  return _buildContent(context, state.list);
+                if (state is UpdateListState) {
+                  return _buildContent(context, state.tupleList);
                 }
 
                 return Container();
@@ -66,7 +67,7 @@ class _FirstPageState extends State<FirstPage> {
                 width: 10,
               ),
               SizedBox(
-                  width: MediaQuery.of(context).size.width - 180,
+                  width: MediaQuery.of(context).size.width / 2,
                   child: Text(corrects.map((c) => c.item1).toList().join(', '))),
             ],
           ),
@@ -78,7 +79,7 @@ class _FirstPageState extends State<FirstPage> {
                 width: 10,
               ),
               SizedBox(
-                  width: MediaQuery.of(context).size.width - 180,
+                  width: MediaQuery.of(context).size.width / 2,
                   child: Text(
                     repeating.map((c) => c.item1).toList().join(', '),
                     style: const TextStyle(fontWeight: FontWeight.bold),

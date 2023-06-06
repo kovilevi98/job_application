@@ -16,21 +16,11 @@ class InitialListState extends ListStates {
 
 @immutable
 class UpdateListState extends ListStates {
+  final List<Tuple2> tupleList;
   final List<String> list;
 
-  UpdateListState(this.list);
+  UpdateListState(this.list, this.tupleList);
 
   @override
-  List<Object?> get props => [...list];
-}
-
-
-@immutable
-class UpdateFeedbackState extends ListStates {
-  final List<Tuple2> list;
-
-  UpdateFeedbackState(this.list);
-
-  @override
-  List<Object?> get props => [list];
+  List<Object?> get props => [list, tupleList];
 }

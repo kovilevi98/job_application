@@ -10,12 +10,12 @@ class ListBloc extends Bloc<ListEvent, ListStates> {
 
   ListBloc() : super(InitialListState()) {
     on<AddToList>(addToList);
-    on<ChangeFeedbackEvent>(changeFeedback);
   }
   
   void addToList(AddToList event, Emitter<ListStates> emit) async {
-    var shouldAdd = event.list.where((item) => !list.contains(item));
-    var repeating = event.list.where((item) => list.contains(item));
+    var listWithoutDuplicates = event.list.toSet().toList();
+    var shouldAdd = listWithoutDuplicates.where((item) => !list.contains(item));
+    var repeating = listWithoutDuplicates.where((item) => list.contains(item));
 
     feedBackList = [];
     for (var element in repeating) {
@@ -29,13 +29,7 @@ class ListBloc extends Bloc<ListEvent, ListStates> {
     list = [...list];
     list.addAll(shouldAdd);
 
-    emit(UpdateListState(list));
-    emit(UpdateFeedbackState(feedBackList));
-  }
-
-  void changeFeedback(ChangeFeedbackEvent event, Emitter<ListStates> emit) async {
-    feedBackList = event.list;
-    emit(UpdateFeedbackState(feedBackList));
+    emit(UpdateListState(list, feedBackList));
   }
 
 }
