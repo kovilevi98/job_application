@@ -8,6 +8,7 @@ import 'package:job_application/bloc/state.dart';
 
 import 'package:job_application/main.dart';
 import 'package:job_application/views/first_page_view.dart';
+import 'package:job_application/views/second_page_view.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockListBloc extends MockBloc<ListEvent, ListStates>
@@ -23,7 +24,7 @@ void main() {
     expect(find.text('1'), findsNothing);
   });
 
-  /*testWidgets('AutoLoginEvent is added to BLoC [1]', (tester) async {
+  testWidgets('AddToListEvent is added to BLoC', (tester) async {
     var bloc = MockListBloc();
     whenListen(bloc, const Stream<ListStates>.empty(),
         initialState: InitialListState());
@@ -38,9 +39,33 @@ void main() {
     );
 
     await tester.enterText(find.byType(TextFormField).first, 'test');
-    await tester.tap(find.bySubtype<ButtonStyleButton>());
+    await tester.tap(find.byType(ElevatedButton).first);
     await tester.pumpAndSettle();
 
-    verify(() => bloc.add(AddToList('test')));
-  });*/
+    verify(() => bloc.add(AddToList(['test'])));
+  });
+
+  testWidgets('Page navigation test', (tester) async {
+    var bloc = MockListBloc();
+    whenListen(bloc, const Stream<ListStates>.empty(),
+        initialState: InitialListState());
+
+    await tester.pumpWidget(BlocProvider<ListBloc>.value(
+      value: bloc,
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const FirstPage(),
+          '/list': (context) => const SecondPage(),
+        },
+      ),
+    ));
+
+    await tester.enterText(find.byType(TextFormField).first, 'test');
+    await tester.tap(find.byType(ElevatedButton).last);
+    await tester.pumpAndSettle();
+
+    expect(find.text("Second page"), findsOneWidget);
+  });
 }

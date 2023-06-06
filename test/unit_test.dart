@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:job_application/bloc/bloc.dart';
 import 'package:job_application/bloc/event.dart';
 import 'package:job_application/bloc/state.dart';
+import 'package:job_application/utils/util.dart';
 import 'package:tuple/tuple.dart';
 
 class MockListBloc extends MockBloc<ListEvent, ListStates>
@@ -14,6 +15,30 @@ void main(){
   });
 
   tearDown(() async {
+  });
+
+  group("Test utils", () {
+    test('Test empty input', () {
+      String? result = Util.validation("");
+      String? resultNull = Util.validation(null);
+      expect(result, "Write a new word");
+      expect(resultNull, "Write a new word");
+    });
+
+    test('Test non alphabetic input', () {
+      String? result = Util.validation("123#");
+      expect(result, "Only Alphabets are allowed");
+    });
+
+    test('Test too long input', () {
+      String? result = Util.validation("dasjdkasndjsadksadsakdsakdjsakdsakdsandsjdsakndjsakdsadsakdsakdsakdsadsakdsakdsakdsakdsakdsakdsakd");
+      expect(result, "One of the words is too long");
+    });
+
+    test('Test not valid input', () {
+      String? result = Util.validation("xxssqq");
+      expect(result, "One of the words is not valid");
+    });
   });
 
   blocTest<ListBloc, ListStates>(
@@ -32,5 +57,6 @@ void main(){
     verify: (bloc) {
       expect(bloc.state, UpdateListState(['test'], [Tuple2('test', false)]));
     },
+
   );
 }

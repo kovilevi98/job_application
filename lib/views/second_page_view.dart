@@ -16,7 +16,7 @@ class _SecondPageState extends State<SecondPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Text Change'),
+          title: const Text('Second page'),
         ),
         body: Center(
           child: BlocBuilder<ListBloc, ListStates>(

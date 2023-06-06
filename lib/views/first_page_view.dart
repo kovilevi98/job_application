@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:job_application/bloc/bloc.dart';
 import 'package:job_application/bloc/event.dart';
 import 'package:job_application/bloc/state.dart';
+import 'package:job_application/utils/util.dart';
 import 'package:tuple/tuple.dart';
 
 class FirstPage extends StatefulWidget {
@@ -63,8 +64,6 @@ class _FirstPageState extends State<FirstPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          /*...List.generate(list.length,
-              (index) => Text(list[index])),*/
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -95,7 +94,7 @@ class _FirstPageState extends State<FirstPage> {
           ),
           TextFormField(
               controller: _textEditingController,
-              validator: _validation),
+              validator: Util.validation),
           ElevatedButton(onPressed: _onSubmitPressed, child: Text('Store'))
         ],
       ),
@@ -113,31 +112,8 @@ class _FirstPageState extends State<FirstPage> {
           .add(AddToList(_textEditingController.text.split(" ")));
       _textEditingController.clear();
     }
-    //Navigator.of(context).pushNamed('/list');
-    //var a = (context.read<ListBloc>().list);
-    //print(a.toString());
   }
 
-  String? _validation(String? value){
-    if (value == null || value.isEmpty) {
-      return 'Write a new word';
-    } else if (!alphaExp.hasMatch(value)) {
-      return 'Only Alphabets are allowed';
-    } else {
-      List words = value.split(" ");
-      var tooLongList = words.where((element) => element.length > 45);
-      if(tooLongList.isNotEmpty){
-        return 'One of the words is too long';
-      }
-      var dReducedSA = DictionaryReducedSA();
-      var notValidWords = words.where((element) => !dReducedSA.hasEntry(element));
-      if(notValidWords.isNotEmpty){
-        return 'One of the words is not valid';
-      }
-    }
-
-    return null;
-  }
   _onNextScreenPressed() {
     Navigator.of(context).pushNamed('/list');
   }
