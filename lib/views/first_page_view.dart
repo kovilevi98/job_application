@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:job_application/bloc/bloc.dart';
 import 'package:job_application/bloc/event.dart';
 import 'package:job_application/bloc/state.dart';
+import 'package:tuple/tuple.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({Key? key}) : super(key: key);
@@ -12,44 +13,108 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  final TextEditingController _textEditingController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Text Change'),
-        ),
-        body: Center(
-          child: BlocBuilder<ListBloc, ListStates>(
-            builder: (context, state) {
-              if (state is InitialListState) {
-                return _counter(context, []);
-              }
-
-              if(state is UpdateListState){
-                return _counter(context, state.list);
-              }
-
-              return Container();
-            },
+          title: Row(
+            children: [
+              const Text('First screen'),
+              ElevatedButton(onPressed: _onNextScreenPressed, child: Text("Next screen"))
+            ],
           ),
-        )
-    );
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: Center(
+            child: BlocBuilder<ListBloc, ListStates>(
+              builder: (context, state) {
+                if (state is InitialListState) {
+                  return _buildContent(context, []);
+                }
+
+                if (state is UpdateFeedbackState) {
+                  return _buildContent(context, state.list);
+                }
+
+                return Container();
+              },
+            ),
+          ),
+        ));
   }
 
+  Widget _buildContent(BuildContext context, List<Tuple2> list) {
+    var repeating = list.where((item) => item.item2);
+    var corrects = list.where((item) => !item.item2);
 
-  Widget _counter(BuildContext context, List<String> list) {
-    return Container(
+    return Form(
+      key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ...List.generate(context.read<ListBloc>().list.length, (index) => Text(context.read<ListBloc>().list[index])),
-          TextFormField(),
-          ElevatedButton(onPressed: (){
-            Navigator.of(context).pushNamed('/list');
-            //context.read<ListBloc>().add(AddToList('dsa'));
-          }, child: Text('Submit'))
+          /*...List.generate(list.length,
+              (index) => Text(list[index])),*/
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("New words: "),
+              SizedBox(
+                width: 10,
+              ),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width - 180,
+                  child: Text(corrects.map((c) => c.item1).toList().join(', '))),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("Wrong words: "),
+              SizedBox(
+                width: 10,
+              ),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width - 180,
+                  child: Text(
+                    repeating.map((c) => c.item1).toList().join(', '),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  )),
+            ],
+          ),
+          TextFormField(
+              controller: _textEditingController,
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Write a new word'
+                  : (alphaExp.hasMatch(value)
+                      ? null
+                      : 'Only Alphabets are allowed')),
+          ElevatedButton(onPressed: _onSubmitPressed, child: Text('Store'))
         ],
       ),
     );
+  }
+
+  static final RegExp alphaExp = RegExp(
+      r'^[a-zA-Z ]*$'); //Regex for english alphabet characters and whitespace
+
+  void _onSubmitPressed() {
+    final FormState? form = _formKey.currentState;
+    if (form!.validate()) {
+      context
+          .read<ListBloc>()
+          .add(AddToList(_textEditingController.text.split(" ")));
+      _textEditingController.clear();
+    }
+    //Navigator.of(context).pushNamed('/list');
+    //var a = (context.read<ListBloc>().list);
+    //print(a.toString());
+  }
+
+  _onNextScreenPressed() {
+    Navigator.of(context).pushNamed('/list');
   }
 }

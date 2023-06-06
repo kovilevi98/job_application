@@ -45,7 +45,7 @@ class _SecondPageState extends State<SecondPage> {
           ...List.generate(context.read<ListBloc>().list.length, (index) => Text(context.read<ListBloc>().list[index])),
           TextFormField(),
           ElevatedButton(onPressed: (){
-            context.read<ListBloc>().add(AddToList('dsa'));
+            //context.read<ListBloc>().add(AddToList('dsa'));
           }, child: Text('Submit'))
         ],
       ),
