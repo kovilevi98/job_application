@@ -42,7 +42,7 @@ void main() {
     await tester.tap(find.byType(ElevatedButton).first);
     await tester.pumpAndSettle();
 
-    verify(() => bloc.add(AddToList(['test'])));
+    verify(() => bloc.add(AddToList(const ['test'])));
   });
 
   testWidgets('Page navigation test', (tester) async {
@@ -68,4 +68,29 @@ void main() {
 
     expect(find.text("Second page"), findsOneWidget);
   });
+
+  testWidgets('Empty second page test', (tester) async {
+    var bloc = MockListBloc();
+    whenListen(bloc, const Stream<ListStates>.empty(),
+        initialState: InitialListState());
+
+    await tester.pumpWidget(BlocProvider<ListBloc>.value(
+      value: bloc,
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const FirstPage(),
+          '/list': (context) => const SecondPage(),
+        },
+      ),
+    ));
+
+    await tester.tap(find.byType(ElevatedButton).last);
+    await tester.pumpAndSettle();
+
+    expect(find.text("Second page"), findsOneWidget);
+  });
+
+
 }

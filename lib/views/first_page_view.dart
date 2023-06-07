@@ -67,7 +67,7 @@ class _FirstPageState extends State<FirstPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("New words: "),
+              const Text("New words: "),
               const SizedBox(
                 width: 10,
               ),
@@ -80,7 +80,7 @@ class _FirstPageState extends State<FirstPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("Wrong words: "),
+              const Text("Wrong words: "),
               const SizedBox(
                 width: 10,
               ),
@@ -95,14 +95,11 @@ class _FirstPageState extends State<FirstPage> {
           TextFormField(
               controller: _textEditingController,
               validator: Util.validation),
-          ElevatedButton(onPressed: _onSubmitPressed, child: Text('Store'))
+          ElevatedButton(onPressed: _onSubmitPressed, child: const Text('Store'))
         ],
       ),
     );
   }
-
-  static final RegExp alphaExp = RegExp(
-      r'^[a-zA-Z ]*$'); //Regex for english alphabet characters and whitespace
 
   void _onSubmitPressed() {
     final FormState? form = _formKey.currentState;

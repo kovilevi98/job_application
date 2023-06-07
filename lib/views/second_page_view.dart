@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:job_application/bloc/bloc.dart';
-import 'package:job_application/bloc/event.dart';
 import 'package:job_application/bloc/state.dart';
 
 class SecondPage extends StatefulWidget {
